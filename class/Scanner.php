@@ -57,7 +57,8 @@ class Scanner
             }
             $speedHumanReadable = round($speed, 2);
             $eta = (int)(($filesToProcess - $filesProcessed) / $speed);
-            echo "Processing file " . ++$filesProcessed . " of " . $filesToProcess . ". Files per second = " . $speedHumanReadable . ". ETA = " . $this->convertToDHIS($eta) . ".\r";
+            $infoString = "Processing file " . ++$filesProcessed . " of " . $filesToProcess . ". Files per second = " . $speedHumanReadable . ". ETA = " . $this->convertToDHIS($eta) . ".";
+            echo $infoString . str_repeat(' ', 130 - strlen($infoString)). "\r";
             $filesData[$file] = self::initData();
 
             $filesData[$file]['name'] = pathinfo($file, PATHINFO_BASENAME);
