@@ -148,4 +148,19 @@ class Math
         return $tmpResult . ' ' . $units[$pow];
     }
 
+    public function evaluateDecimal(string $input) : int|float|string {
+        $cleanedInput = preg_replace('/[^0-9.\/]/', '', $input);
+        if (str_contains($cleanedInput, '/')) {
+            list($numerator, $denominator) = explode('/', $cleanedInput);
+
+            if ((float)$denominator != 0) {
+                $result = (float)$numerator / (float)$denominator;
+                return $result;
+            } else {
+                return -1;
+            }
+        }
+        return $cleanedInput;
+    }
+
 }

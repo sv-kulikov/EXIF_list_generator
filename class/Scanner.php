@@ -7,28 +7,34 @@ use RecursiveIteratorIterator;
 
 class Scanner
 {
-    public function findFiles(string $startDir, array $extensions): array
-    {
+    public function findFiles(string $startDir, array $extensions): array {
         $filesFound = [];
+        $this->scanDirectory($startDir, $extensions, $filesFound);
+        return $filesFound;
+    }
 
-        $dirIterator = new RecursiveDirectoryIterator($startDir);
-        $iterator = new RecursiveIteratorIterator($dirIterator);
+    private function scanDirectory(string $dir, array $extensions, array &$filesFound) {
+        if ($handle = opendir($dir)) {
 
-        foreach ($iterator as $file) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry != '.' && $entry != '..') {
 
-            if ($file->isDir() && $file->getFilename() != '.' && $file->getFilename() != '..') {
-                echo "Scanning directory: " . $file->getPathname() . "\n";
-            }
+                    $fullPath = $dir . DIRECTORY_SEPARATOR . $entry;
 
-            if ($file->isFile()) {
-                $ext = strtolower(pathinfo($file->getFilename(), PATHINFO_EXTENSION));
-                if (in_array($ext, $extensions)) {
-                    $filesFound[] = $file->getPathname();
+                    if (is_dir($fullPath)) {
+                        echo "Scanning directory: " . $fullPath . "\n";
+                        $this->scanDirectory($fullPath, $extensions, $filesFound);
+                    } elseif (is_file($fullPath)) {
+
+                        $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                        if (in_array($ext, $extensions)) {
+                            $filesFound[] = $fullPath;
+                        }
+                    }
                 }
             }
+            closedir($handle);
         }
-
-        return $filesFound;
     }
 
     public function analyzeFiles(Extractor $extractor, Math $math, Converter $converter, array $files, bool $exifToolIsAvailable): array
@@ -51,7 +57,7 @@ class Scanner
                     $extractor->extractExifDataViaExifTool($file, $filesData, $converter, $math);
                 }
             } else {
-                $extractor->extractExifData($exif, $file, $filesData, $exifToolIsAvailable, $converter);
+                $extractor->extractExifData($exif, $file, $filesData, $exifToolIsAvailable, $converter, $math);
             }
         }
         return $filesData;

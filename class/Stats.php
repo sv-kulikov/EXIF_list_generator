@@ -142,11 +142,11 @@ class Stats
                 $monthlyStats[$year]['monthly'][$month]['pixelsAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['pixels'] ?? []);
                 $monthlyStats[$year]['monthly'][$month]['pixelsAvgHumanReadable'] = $math->calculateMegapixels($monthlyStats[$year]['monthly'][$month]['widthAvg'], $monthlyStats[$year]['monthly'][$month]['heightAvg']);
 
-                $monthlyStats[$year]['monthly'][$month]['exposureTimeAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['exposureTime'] ?? []);
+                $monthlyStats[$year]['monthly'][$month]['exposureTimeAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['exposureTime'] ?? [], 10);
                 $monthlyStats[$year]['monthly'][$month]['fNumberAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['fNumber'] ?? []);
                 $monthlyStats[$year]['monthly'][$month]['isoAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['iso'] ?? []);
                 $monthlyStats[$year]['monthly'][$month]['focalLengthAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['focalLength'] ?? []);
-                $monthlyStats[$year]['monthly'][$month]['shutterSpeedValueAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['shutterSpeedValue'] ?? []);
+                $monthlyStats[$year]['monthly'][$month]['shutterSpeedValueAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['shutterSpeedValue'] ?? [], 10);
                 $monthlyStats[$year]['monthly'][$month]['apertureValueAvg'] = $math->calculateAverage($monthlyStats[$year]['monthly'][$month]['apertureValue'] ?? []);
             }
         }
@@ -161,11 +161,11 @@ class Stats
             $monthlyStats[$year]['pixelsAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['pixels'] ?? []);
             $monthlyStats[$year]['pixelsAvgHumanReadable'] = $math->calculateMegapixels($monthlyStats[$year]['heightAvg'], $monthlyStats[$year]['widthAvg']);
 
-            $monthlyStats[$year]['exposureTimeAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['exposureTime'] ?? []);
+            $monthlyStats[$year]['exposureTimeAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['exposureTime'] ?? [], 10);
             $monthlyStats[$year]['fNumberAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['fNumber'] ?? []);
             $monthlyStats[$year]['isoAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['iso'] ?? []);
             $monthlyStats[$year]['focalLengthAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['focalLength'] ?? []);
-            $monthlyStats[$year]['shutterSpeedValueAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['shutterSpeedValue'] ?? []);
+            $monthlyStats[$year]['shutterSpeedValueAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['shutterSpeedValue'] ?? [], 10);
             $monthlyStats[$year]['apertureValueAvg'] = $math->calculateAverage($monthlyStats[$year]['total']['apertureValue'] ?? []);
         }
 

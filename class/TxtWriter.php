@@ -42,14 +42,7 @@ class TxtWriter
 
                 foreach ($data as $dataKey => $dataValue) {
                     if (!is_array($dataValue) || str_contains($dataKey, 'Avg')) {
-
-                        if (in_array($dataKey, ['exposureTimeAvg', 'shutterSpeedValueAvg'])) {
-                            file_put_contents($txtStatsFileName, '  ' . $dataKey . " = " . $math->convertDecimalToFraction($dataValue) . "\n", FILE_APPEND);
-                        } else {
-                            file_put_contents($txtStatsFileName, '  ' . $dataKey . " = " . $dataValue . "\n", FILE_APPEND);
-                        }
-
-
+                        file_put_contents($txtStatsFileName, '  ' . $dataKey . " = " . $dataValue . "\n", FILE_APPEND);
                     } elseif (in_array($dataKey, ['cameraVendor', 'cameraModel', 'lensNameCleared'])) {
                         file_put_contents($txtStatsFileName, '  ' . $dataKey . "\n", FILE_APPEND);
                         foreach ($dataValue as $dataValueKey => $dataValueValue) {
@@ -72,14 +65,7 @@ class TxtWriter
             file_put_contents($txtStatsFileName, $year . "\n", FILE_APPEND);
             foreach ($yearData as $dataKey => $dataValue) {
                 if (!is_array($dataValue) || str_contains($dataKey, 'Avg')) {
-
-                    if (in_array($dataKey, ['exposureTimeAvg', 'shutterSpeedValueAvg'])) {
-                        file_put_contents($txtStatsFileName, '  ' . $dataKey . " = " . $math->convertDecimalToFraction($dataValue) . "\n", FILE_APPEND);
-                    } else {
-                        file_put_contents($txtStatsFileName, '  ' . $dataKey . " = " . $dataValue . "\n", FILE_APPEND);
-                    }
-
-
+                    file_put_contents($txtStatsFileName, '  ' . $dataKey . " = " . $dataValue . "\n", FILE_APPEND);
                 } elseif (in_array($dataKey, ['cameraVendor', 'cameraModel', 'lensNameCleared'])) {
                     file_put_contents($txtStatsFileName, '  ' . $dataKey . "\n", FILE_APPEND);
                     foreach ($dataValue as $dataValueKey => $dataValueValue) {
@@ -107,20 +93,18 @@ class TxtWriter
                 }
             } else {
                 if (in_array($dataKey, ['exposureTime', 'shutterSpeedValue'])) {
-                    file_put_contents($txtStatsFileName, '  ' . $dataKey . "Avg = " . $math->convertDecimalToFraction($math->calculateAverage($dataValue)) . "\n", FILE_APPEND);
+                    file_put_contents($txtStatsFileName, '  ' . $dataKey . "Avg = " . $math->calculateAverage($dataValue, 10) . "\n", FILE_APPEND);
                 } else {
                     file_put_contents($txtStatsFileName, '  ' . $dataKey . "Avg = " . $math->calculateAverage($dataValue) . "\n", FILE_APPEND);
                 }
             }
-
         }
-
         file_put_contents($txtStatsFileName, "\n", FILE_APPEND);
     }
 
 
-
-    public function writeStatsForCamerasAndLenses(string $txtStatsFileName, array $statsForCamerasAndLenses, Math $math): void
+    public
+    function writeStatsForCamerasAndLenses(string $txtStatsFileName, array $statsForCamerasAndLenses, Math $math): void
     {
         file_put_contents($txtStatsFileName, "Stats for cameras and lenses: \n", FILE_APPEND);
         file_put_contents($txtStatsFileName, "\n", FILE_APPEND);
@@ -128,7 +112,11 @@ class TxtWriter
         foreach ($statsForCamerasAndLenses['cameraModels'] as $dataKey => $dataValue) {
             file_put_contents($txtStatsFileName, ' ' . $dataKey . "\n", FILE_APPEND);
             foreach ($dataValue as $subKey => $subValue) {
-                file_put_contents($txtStatsFileName, '  ' . $subKey . "Avg = " . $math->calculateAverage($subValue) . "\n", FILE_APPEND);
+                if (in_array($subKey, ['exposureTime', 'shutterSpeedValue'])) {
+                    file_put_contents($txtStatsFileName, '  ' . $subKey . "Avg = " . $math->calculateAverage($subValue, 10) . "\n", FILE_APPEND);
+                } else {
+                    file_put_contents($txtStatsFileName, '  ' . $subKey . "Avg = " . $math->calculateAverage($subValue) . "\n", FILE_APPEND);
+                }
             }
         }
 
@@ -137,10 +125,13 @@ class TxtWriter
         foreach ($statsForCamerasAndLenses['lensNames'] as $dataKey => $dataValue) {
             file_put_contents($txtStatsFileName, ' ' . $dataKey . "\n", FILE_APPEND);
             foreach ($dataValue as $subKey => $subValue) {
-                file_put_contents($txtStatsFileName, '  ' . $subKey . "Avg = " . $math->calculateAverage($subValue) . "\n", FILE_APPEND);
+                if (in_array($subKey, ['exposureTime', 'shutterSpeedValue'])) {
+                    file_put_contents($txtStatsFileName, '  ' . $subKey . "Avg = " . $math->calculateAverage($subValue, 10) . "\n", FILE_APPEND);
+                } else {
+                    file_put_contents($txtStatsFileName, '  ' . $subKey . "Avg = " . $math->calculateAverage($subValue) . "\n", FILE_APPEND);
+                }
             }
         }
-
 
         file_put_contents($txtStatsFileName, "\n", FILE_APPEND);
     }

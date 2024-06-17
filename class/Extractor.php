@@ -4,20 +4,23 @@ namespace Sv\Photo\ExifStats;
 
 class Extractor
 {
-    public function extractExifData(array $exif, string $file, array &$filesData, bool $exifToolIsAvailable, Converter $converter): void
+    public function extractExifData(array $exif, string $file, array &$filesData, bool $exifToolIsAvailable, Converter $converter, Math $math): void
     {
         $filesData[$file]['mimeType'] = $exif['MimeType'] ?? 'unknownMimeType';
 
         $filesData[$file]['height'] = $exif['COMPUTED']['Height'] ?? 0;
         $filesData[$file]['width'] = $exif['COMPUTED']['Width'] ?? 0;
 
-        $fileDateTime = strtotime($exif['DateTimeOriginal'] ?? date("Y-m-d H:i:s", filemtime($file)));
-        $filesData[$file]['dateY'] = date('Y', $fileDateTime);
-        $filesData[$file]['dateM'] = date('m', $fileDateTime);
-        $filesData[$file]['dateD'] = date('d', $fileDateTime);
-        $filesData[$file]['dateH'] = date('H', $fileDateTime);
-        $filesData[$file]['dateI'] = date('i', $fileDateTime);
-        $filesData[$file]['dateS'] = date('s', $fileDateTime);
+        $fileDateTime = strtotime($exif['DateTimeOriginal'] ?? date("Y-m-d H:i:s", filectime($file)));
+        if ((int)(date('Y', $fileDateTime)) < 1980) {
+            $fileDateTime = filectime($file);
+        }
+        $filesData[$file]['dateY'] = (int)date('Y', $fileDateTime);
+        $filesData[$file]['dateM'] = (int)date('m', $fileDateTime);
+        $filesData[$file]['dateD'] = (int)date('d', $fileDateTime);
+        $filesData[$file]['dateH'] = (int)date('H', $fileDateTime);
+        $filesData[$file]['dateI'] = (int)date('i', $fileDateTime);
+        $filesData[$file]['dateS'] = (int)date('s', $fileDateTime);
 
         $filesData[$file]['cameraVendor'] = $exif['Make'] ?? 'unknownVendor';
         $filesData[$file]['cameraModel'] = $exif['Model'] ?? 'unknownModel';
@@ -52,18 +55,18 @@ class Extractor
         $filesData[$file]['software'] = $exif['Software'] ?? 'unknownSoftware';
 
         $filesData[$file]['exposureTimeRaw'] = $exif['ExposureTime'] ?? 'unknownExposureTime';
-        $filesData[$file]['exposureTime'] = eval('return ' . ($exif['ExposureTime'] ?? '0/1') . ';');
+        $filesData[$file]['exposureTime'] = $math->evaluateDecimal($exif['ExposureTime'] ?? '0/1');
         $filesData[$file]['fNumberRaw'] = $exif['FNumber'] ?? 'unknownFNumber';
-        $filesData[$file]['fNumber'] = eval('return ' . ($exif['FNumber'] ?? '0/1') . ';');
+        $filesData[$file]['fNumber'] = $math->evaluateDecimal($exif['FNumber'] ?? '0/1');
         $filesData[$file]['iso'] = $exif['ISOSpeedRatings'] ?? 'unknownISO';
         $filesData[$file]['focalLengthRaw'] = $exif['FocalLength'] ?? 'unknownFocalLength';
-        $filesData[$file]['focalLength'] = eval('return ' . ($exif['FocalLength'] ?? '0/1') . ';');
+        $filesData[$file]['focalLength'] = $math->evaluateDecimal($exif['FocalLength'] ?? '0/1');
         $filesData[$file]['shutterSpeedValueRaw'] = $exif['ShutterSpeedValue'] ?? 'unknownShutterSpeedValue';
-        $filesData[$file]['shutterSpeedValue'] = eval('return ' . ($exif['ShutterSpeedValue'] ?? '0/1') . ';');
+        $filesData[$file]['shutterSpeedValue'] = $math->evaluateDecimal($exif['ShutterSpeedValue'] ?? '0/1');
         $filesData[$file]['apertureValueRaw'] = $exif['ApertureValue'] ?? 'unknownApertureValue';
-        $filesData[$file]['apertureValue'] = eval('return ' . ($exif['ApertureValue'] ?? '0/1') . ';');
+        $filesData[$file]['apertureValue'] = $math->evaluateDecimal($exif['ApertureValue'] ?? '0/1');
         $filesData[$file]['exposureBiasValueRaw'] = $exif['ExposureBiasValue'] ?? 'unknownExposureBiasValue';
-        $filesData[$file]['exposureBiasValue'] = eval('return ' . ($exif['ExposureBiasValue'] ?? '0/1') . ';');
+        $filesData[$file]['exposureBiasValue'] = $math->evaluateDecimal($exif['ExposureBiasValue'] ?? '0/1');
         $filesData[$file]['flashRaw'] = $exif['Flash'] ?? 'unknownFlashSettings';
         $filesData[$file]['flash'] = $converter->parseFlash($exif['Flash'] ?? -1);
         $filesData[$file]['exposureProgramRaw'] = $exif['ExposureProgram'] ?? 'unknownExposureProgram';
@@ -98,13 +101,16 @@ class Extractor
         $filesData[$file]['height'] = $exif['ImageHeight'] ?? 0;
         $filesData[$file]['width'] = $exif['ImageWidth'] ?? 0;
 
-        $fileDateTime = strtotime($exif['FileModifyDate'] ?? date("Y-m-d H:i:s", filemtime($file)));
-        $filesData[$file]['dateY'] = date('Y', $fileDateTime);
-        $filesData[$file]['dateM'] = date('m', $fileDateTime);
-        $filesData[$file]['dateD'] = date('d', $fileDateTime);
-        $filesData[$file]['dateH'] = date('H', $fileDateTime);
-        $filesData[$file]['dateI'] = date('i', $fileDateTime);
-        $filesData[$file]['dateS'] = date('s', $fileDateTime);
+        $fileDateTime = strtotime($exif['FileModifyDate'] ?? date("Y-m-d H:i:s", filectime($file)));
+        if ((int)(date('Y', $fileDateTime)) < 1980) {
+            $fileDateTime = filectime($file);
+        }
+        $filesData[$file]['dateY'] = (int)date('Y', $fileDateTime);
+        $filesData[$file]['dateM'] = (int)date('m', $fileDateTime);
+        $filesData[$file]['dateD'] = (int)date('d', $fileDateTime);
+        $filesData[$file]['dateH'] = (int)date('H', $fileDateTime);
+        $filesData[$file]['dateI'] = (int)date('i', $fileDateTime);
+        $filesData[$file]['dateS'] = (int)date('s', $fileDateTime);
 
         $filesData[$file]['cameraVendor'] = $exif['Make'] ?? 'unknownVendor';
         $filesData[$file]['cameraModel'] = $exif['Model'] ?? 'unknownModel';
@@ -129,18 +135,18 @@ class Extractor
 
         $filesData[$file]['software'] = $exif['Software'] ?? 'unknownSoftware';
         $filesData[$file]['exposureTimeRaw'] = $math->convertDecimalToFraction($exif['ExposureTime'] ?? 0);
-        $filesData[$file]['exposureTime'] = $exif['ExposureTime'] ?? 'unknownExposureTime';
+        $filesData[$file]['exposureTime'] = $math->evaluateDecimal($exif['ExposureTime'] ?? '0/1');
         $filesData[$file]['fNumberRaw'] = ($exif['FNumber'] ?? 'x') . '/1';
-        $filesData[$file]['fNumber'] = $exif['FNumber'] ?? 'unknownFNumber';
+        $filesData[$file]['fNumber'] = $math->evaluateDecimal($exif['FNumber'] ?? '0/1');
         $filesData[$file]['iso'] = $exif['ISO'] ?? 'unknownISO';
         $filesData[$file]['focalLengthRaw'] = (int)($exif['FocalLength'] ?? '0') . '/1';
-        $filesData[$file]['focalLength'] = (int)($exif['FocalLength'] ?? 0);
+        $filesData[$file]['focalLength'] = $math->evaluateDecimal($exif['FocalLength'] ?? '0');
         $filesData[$file]['shutterSpeedValueRaw'] = $math->convertDecimalToFraction($exif['ShutterSpeedValue'] ?? 0);
-        $filesData[$file]['shutterSpeedValue'] = $exif['ShutterSpeedValue'] ?? 'unknownShutterSpeedValue';
+        $filesData[$file]['shutterSpeedValue'] = $math->evaluateDecimal($exif['ShutterSpeedValue'] ?? '0');
         $filesData[$file]['apertureValueRaw'] = ($exif['ApertureValue'] ?? 'x') . '/1';
-        $filesData[$file]['apertureValue'] = $exif['ApertureValue'] ?? 'unknownApertureValue';
+        $filesData[$file]['apertureValue'] = $math->evaluateDecimal($exif['ApertureValue'] ?? '0');
         $filesData[$file]['exposureBiasValueRaw'] = '0/' . ($exif['ExposureCompensation'] ?? 'x');
-        $filesData[$file]['exposureBiasValue'] = $exif['ExposureCompensation'] ?? 'unknownExposureBiasValue';
+        $filesData[$file]['exposureBiasValue'] = $math->evaluateDecimal($exif['ExposureCompensation'] ?? '0');
         $filesData[$file]['flashRaw'] = $converter->reverseParseFlash($exif['Flash'] ?? '');
         $filesData[$file]['flash'] = $exif['Flash'] ?? 'unknownFlashSettings';
         $filesData[$file]['exposureProgramRaw'] = $converter->reverseParseExposureProgram($exif['ExposureProgram'] ?? '');
@@ -165,4 +171,6 @@ class Extractor
 
         $filesData[$file]['exifVersion'] = $exif['ExifVersion'] ?? 'unknownExifVersion';
     }
+
+
 }
