@@ -11,7 +11,7 @@ class Scanner
         return $filesFound;
     }
 
-    private function scanDirectory(string $dir, array $extensions, array &$filesFound) : void
+    private function scanDirectory(string $dir, array $extensions, array &$filesFound): void
     {
         if ($handle = opendir($dir)) {
 
@@ -42,11 +42,22 @@ class Scanner
 
     public function analyzeFiles(Extractor $extractor, Math $math, Converter $converter, array $files, bool $exifToolIsAvailable): array
     {
+        $startTime = microtime(true);
         $filesData = [];
         $filesProcessed = 0;
         $filesToProcess = sizeof($files);
         foreach ($files as $file) {
-            echo "Processing file " . ++$filesProcessed . " of " . $filesToProcess . ".\r";
+            $deltaTime = microtime(true) - $startTime;
+            if ($deltaTime == 0) {
+                $deltaTime = 1;
+            }
+            $speed = ($filesProcessed / $deltaTime);
+            if ($speed == 0) {
+                $speed = 1;
+            }
+            $speedHumanReadable = round($speed, 2);
+            $eta = (int)(($filesToProcess - $filesProcessed) / $speed);
+            echo "Processing file " . ++$filesProcessed . " of " . $filesToProcess . ". Files per second = " . $speedHumanReadable . ". ETA = " . $this->convertToDHIS($eta) . ".\r";
             $filesData[$file] = self::initData();
 
             $filesData[$file]['name'] = pathinfo($file, PATHINFO_BASENAME);
@@ -160,5 +171,19 @@ class Scanner
         ];
 
     }
+
+    private function convertToDHIS(int $seconds): string
+    {
+        $days = floor($seconds / 86400);
+        $secondsLeft = $seconds % 86400;
+        $hours = floor($secondsLeft / 3600);
+        $secondsLeft = $secondsLeft % 3600;
+        $minutes = floor($secondsLeft / 60);
+        $seconds = $secondsLeft % 60;
+
+        // Format as D.H:I:S
+        return sprintf("%d.%02d:%02d:%02d", $days, $hours, $minutes, $seconds);
+    }
+
 
 }
