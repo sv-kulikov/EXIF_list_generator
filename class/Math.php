@@ -154,8 +154,7 @@ class Math
             list($numerator, $denominator) = explode('/', $cleanedInput);
 
             if ((float)$denominator != 0) {
-                $result = (float)$numerator / (float)$denominator;
-                return $result;
+                return (float)$numerator / (float)$denominator;
             } else {
                 return -1;
             }

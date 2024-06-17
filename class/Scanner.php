@@ -2,9 +2,6 @@
 
 namespace Sv\Photo\ExifStats;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-
 class Scanner
 {
     public function findFiles(string $startDir, array $extensions): array
@@ -14,7 +11,7 @@ class Scanner
         return $filesFound;
     }
 
-    private function scanDirectory(string $dir, array $extensions, array &$filesFound)
+    private function scanDirectory(string $dir, array $extensions, array &$filesFound) : void
     {
         if ($handle = opendir($dir)) {
 
