@@ -56,10 +56,10 @@ echo "\n";
 
 $files = [];
 foreach ($startDirectoryNames as $startDirectoryName) {
-    echo "Scanning [" . $startDirectoryName. "]...\n";
+    echo "Scanning input directory [" . $startDirectoryName. "]...\n";
     $files = array_merge($files, $scanner->findFiles($startDirectoryName, $extensions));
 }
-echo "Done. Files found: " . sizeof($files) . "\n\n";
+echo "\nDone. Files found: " . sizeof($files) . "\n\n";
 if (sizeof($files) == 0) {
     exit();
 }

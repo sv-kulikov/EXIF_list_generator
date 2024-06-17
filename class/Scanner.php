@@ -7,13 +7,15 @@ use RecursiveIteratorIterator;
 
 class Scanner
 {
-    public function findFiles(string $startDir, array $extensions): array {
+    public function findFiles(string $startDir, array $extensions): array
+    {
         $filesFound = [];
         $this->scanDirectory($startDir, $extensions, $filesFound);
         return $filesFound;
     }
 
-    private function scanDirectory(string $dir, array $extensions, array &$filesFound) {
+    private function scanDirectory(string $dir, array $extensions, array &$filesFound)
+    {
         if ($handle = opendir($dir)) {
 
             while (false !== ($entry = readdir($handle))) {
@@ -22,7 +24,11 @@ class Scanner
                     $fullPath = $dir . DIRECTORY_SEPARATOR . $entry;
 
                     if (is_dir($fullPath)) {
-                        echo "Scanning directory: " . $fullPath . "\n";
+                        $spacesCount = 130 - strlen("Scanning directory: " . $fullPath);
+                        if ($spacesCount < 0) {
+                            $spacesCount = 0;
+                        }
+                        echo "Scanning directory: " . $fullPath . str_repeat(' ', $spacesCount) . "\r";
                         $this->scanDirectory($fullPath, $extensions, $filesFound);
                     } elseif (is_file($fullPath)) {
 
@@ -63,7 +69,8 @@ class Scanner
         return $filesData;
     }
 
-    public function ignoreJpegsInCaseOfRawPresence(array &$filesData) : void {
+    public function ignoreJpegsInCaseOfRawPresence(array &$filesData): void
+    {
         $potentialDuplicates = [];
         foreach ($filesData as $data) {
             $data['unixtime'] = mktime(
