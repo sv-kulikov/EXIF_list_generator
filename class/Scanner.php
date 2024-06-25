@@ -66,13 +66,13 @@ class Scanner
             $filesData[$file]['size'] = filesize($file);
             $filesData[$file]['sizeHumanReadable'] = $math->formatBytes(filesize($file));
 
-            $exif = @exif_read_data($file);
-            if (!$exif) {
-                if ($exifToolIsAvailable) {
-                    $extractor->extractExifDataViaExifTool($file, $filesData, $converter, $math);
-                }
+            if ($exifToolIsAvailable) {
+                $extractor->extractExifDataViaExifTool($file, $filesData, $converter, $math);
             } else {
-                $extractor->extractExifData($exif, $file, $filesData, $exifToolIsAvailable, $converter, $math);
+                $exif = @exif_read_data($file);
+                if (!$exif) {
+                    echo "Exif tool is not available and PHP Exif library failed to read EXIF data from file [" . $file . "]. Skipping.\n";
+                }
             }
         }
         return $filesData;
@@ -101,7 +101,7 @@ class Scanner
                         continue;
                     }
                     foreach ($data as $testDataInnerLevel) {
-                        if ($testDataOuterLevel['fullName'] != $testDataInnerLevel['fullName']) {
+                        if (($testDataOuterLevel['fullName'] != $testDataInnerLevel['fullName']) && !$testDataInnerLevel['isJpeg']) {
                             if (abs($testDataInnerLevel['unixtime'] - $testDataOuterLevel['unixtime']) <= 10) {
                                 echo "Unsetting JPEG [" . $testDataOuterLevel['fullName'] . "] because of RAW [" . $testDataInnerLevel['fullName'] . "].\n";
                                 unset($filesData[$testDataOuterLevel['fullName']]);

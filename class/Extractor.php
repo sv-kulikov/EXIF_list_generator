@@ -101,7 +101,13 @@ class Extractor
         $filesData[$file]['height'] = $exif['ImageHeight'] ?? 0;
         $filesData[$file]['width'] = $exif['ImageWidth'] ?? 0;
 
-        $fileDateTime = strtotime($exif['FileModifyDate'] ?? date("Y-m-d H:i:s", filectime($file)));
+        if (isset($exif['DateTimeOriginal']) && (isset($exif['OffsetTimeOriginal']))) {
+            $dtCombined = str_replace(':', '-', $exif['DateTimeOriginal'] . $exif['OffsetTimeOriginal']);
+        } else {
+            $dtCombined = date("Y-m-d H:i:s", filectime($file));
+        }
+
+        $fileDateTime = strtotime($dtCombined);
         if ((int)(date('Y', $fileDateTime)) < 1980) {
             $fileDateTime = filectime($file);
         }
