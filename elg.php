@@ -46,10 +46,10 @@ echo "\n";
 // Check if "exiftool" is available (needed for lens name extraction)
 if (file_exists(__DIR__ . '/utils/exiftool.exe')) {
     $exifToolIsAvailable = true;
-    echo "Exiftool found. It will be used for lens name extraction and CR* processing in case of internal PHP Exif library failure.\n";
+    echo "Exiftool found. It will be used as a default EXIF data extractor. God bless the author of Exiftool!\n";
 } else {
     $exifToolIsAvailable = false;
-    echo "Exiftool not found. Lens name extraction will not be possible, CR* processing in case of internal PHP Exif library failure will not be possible.\n";
+    echo "Exiftool not found. Lens name extraction will not be possible, CR* processing in case of internal PHP Exif library failure will not be possible. Please just download Exiftool and save a LOT of effort.\n";
 }
 
 echo "\n";
