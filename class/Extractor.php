@@ -101,8 +101,14 @@ class Extractor
         $filesData[$file]['height'] = $exif['ImageHeight'] ?? 0;
         $filesData[$file]['width'] = $exif['ImageWidth'] ?? 0;
 
-        if (isset($exif['DateTimeOriginal']) && (isset($exif['OffsetTimeOriginal']))) {
-            $dtCombined = str_replace(':', '-', $exif['DateTimeOriginal'] . $exif['OffsetTimeOriginal']);
+        if (isset($exif['DateTimeOriginal']) && (isset($exif['OffsetTimeOriginal'])) && ($exif['DateTimeOriginal'] != '0000:00:00 00:00:00')) {
+            $dtCombined = $exif['DateTimeOriginal'] . $exif['OffsetTimeOriginal'];
+        } elseif (isset($exif['DateTimeOriginal']) && ($exif['DateTimeOriginal'] != '0000:00:00 00:00:00')) {
+            $dtCombined = $exif['DateTimeOriginal'];
+        } elseif (isset($exif['CreateDate'])) {
+            $dtCombined = $exif['CreateDate'];
+        } elseif (isset($exif['FileModifyDate'])) {
+            $dtCombined = $exif['FileModifyDate'];
         } else {
             $dtCombined = date("Y-m-d H:i:s", filectime($file));
         }
